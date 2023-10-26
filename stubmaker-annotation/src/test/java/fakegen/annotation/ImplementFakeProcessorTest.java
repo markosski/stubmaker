@@ -1,4 +1,4 @@
-package fakegen.annotation;
+package stubmaker.annotation;
 
 import com.google.testing.compile.Compilation;
 import com.google.testing.compile.JavaFileObjects;

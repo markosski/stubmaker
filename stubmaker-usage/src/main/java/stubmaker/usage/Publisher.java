@@ -1,6 +1,6 @@
-package fakegen.usage;
+package stubmaker.usage;
 
-import fakegen.annotation.ImplementStub;
+import stubmaker.annotation.ImplementStub;
 
 @ImplementStub
 public interface Publisher {

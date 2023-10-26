@@ -1,11 +1,11 @@
-package fakegen.usage;
+package stubmaker.usage;
 
 import java.util.Optional;
 
 public class Main {
     public static void main(String[] args) {
-        var emailService = new fakegen.usage.EmailServiceStub();
-        var userRepo = new fakegen.usage.UserRepoStub();
+        var emailService = new stubmaker.usage.EmailServiceStub();
+        var userRepo = new stubmaker.usage.UserRepoStub();
         userRepo.when_get("100", Optional.of(new UserRepo.User("100", "Marcin K")));
         userRepo.when_get("101", Optional.of(new UserRepo.User("101", "John Wick")));
         userRepo.when_get((params) -> Optional.empty());

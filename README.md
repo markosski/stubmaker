@@ -1,9 +1,7 @@
 # stubmaker
 
-FakeGen is a small utility that generates a stub implementations of annotated interfaces. 
-FakeGen can be useful in following scenarios:
-* there is a need to mock beans in tests
-* there is a need to fake beans in component tests to prevent executing code that interacts with outside world
+Stubmaker is a small utility that generates a stub implementations of annotated interfaces. 
+Stubmaker can be useful in scenarios where there is a need to execute application in lower environment or under test with some componnets stubbed to prevent from communicating with external services, e.g. component that sends confirmation email.
 
 ## Usage
 

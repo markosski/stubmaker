@@ -1,4 +1,4 @@
-package fakegen.annotation;
+package stubmaker.annotation;
 
 import com.google.auto.service.AutoService;
 import org.apache.velocity.VelocityContext;
@@ -17,7 +17,7 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.util.*;
 
-@SupportedAnnotationTypes("fakegen.annotation.ImplementStub")
+@SupportedAnnotationTypes("stubmaker.annotation.ImplementStub")
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 @AutoService(Processor.class)
 public class ImplementStubProcessor extends AbstractProcessor {

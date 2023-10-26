@@ -1,4 +1,4 @@
-package fakegen.annotation;
+package stubmaker.annotation;
 
 @ImplementStub
 public interface UserRepo {

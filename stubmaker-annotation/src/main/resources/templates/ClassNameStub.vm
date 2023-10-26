@@ -9,7 +9,7 @@
 #macro( typeName, $param )
 #if($param == "void")Void#end
 #end
-// Generated with fakegen.
+// Generated with stubmaker.
 package $packageName;
 
 import java.util.HashMap;
