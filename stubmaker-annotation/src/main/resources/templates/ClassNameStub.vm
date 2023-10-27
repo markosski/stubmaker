@@ -1,3 +1,4 @@
+#macro( capitalize, $string)$string.substring(0,1).toUpperCase()$string.substring(1,$string.length())#end
 #macro( params, $params )
 #set($sep = "")
 #foreach( $p in $params )$sep$p#set($sep = ", ")#end
@@ -7,42 +8,100 @@
 #foreach( $p in $params )$sep${p.ParamName}#set($sep = ", ")#end
 #end
 #macro( typeName, $param )
-#if($param == "void")Void#end
+#if($param == "void")Void#else$param#end
 #end
+#macro( whenThenFunctionParams, $methods )
+#set($sep = "")
+#foreach( $m in $methods )
+#if($m.Params.size() > 0 && $m.ReturnType != "void")${sep}Map<#capitalize(${m.MethodName})Params, $m.ReturnType> data_${m.methodName}#set($sep = ", ")#end
+#end
+#end
+#macro( whenThenFunctionParamTypes, $methods )
+#set($sep = "")
+#foreach( $m in $methods )
+#if($m.Params.size() > 0 && $m.ReturnType != "void")$sep$m.ReturnType#set($sep = ", ")#end
+#end
+#end
+#macro( whenThenFunctionParamNames, $methods )
+#set($sep = "")
+#foreach( $m in $methods )
+#if($m.Params.size() > 0 && $m.ReturnType != "void")${sep}data_${m.methodName}#set($sep = ", ")#end
+#end
+#end
+#set($hasData = "#whenThenFunctionParamNames" != "")
+#set($whenThenFunctionParams = "#whenThenFunctionParams")
+#set($whenThenFunctionParamNames = "#whenThenFunctionParamNames")
+#set($whenThenFunctionParamTypes = "#whenThenFunctionParamTypes")
+
 // Generated with stubmaker.
 package $packageName;
 
+import java.lang.FunctionalInterface;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class $className implements $interfaceName {
     private final Logger logger = LoggerFactory.getLogger(${className}.class);
+
+##
+## method input records
+##
 #foreach( $m in $methods )
 #if($m.Params.size() > 0)
-    record ${m.MethodName}Params(#params($m.Params)) {}
+    record #capitalize(${m.MethodName})Params(#params($m.Params)) {}
 #end
+#end
+#if($hasData)
+    record AllData($whenThenFunctionParams) {}
 #end
 
+##
+## defaults, data maps, functions
+##
 #foreach( $m in $methods )
+    #if($hasData)
+    private BiFunction<#capitalize(${m.MethodName})Params, AllData, #typeName(${m.ReturnType})> ${m.MethodName}_function = null;
+    #end
 #if($m.Params.size() > 0 && $m.ReturnType != "void")
-    private Function<${m.MethodName}Params,$m.ReturnType> ${m.MethodName}_default = (params) -> null;
-    private final Map<${m.MethodName}Params, $m.ReturnType> whenThenMap_$m.methodName = new HashMap<>();
+    private Function<#capitalize(${m.MethodName})Params,$m.ReturnType> ${m.MethodName}_default = (params) -> null;
+    private final Map<#capitalize(${m.MethodName})Params, $m.ReturnType> data_$m.methodName = new HashMap<>();
+
+#elseif($m.Params.size() > 0 && $m.ReturnType == "void")
 #elseif($m.ReturnType != "void")
     private Supplier<$m.ReturnType> ${m.MethodName}_default = () -> null;
 #end
 #end
+#if($hasData)
+    private final AllData allData = new AllData($whenThenFunctionParamNames);
+#end
+
+##
+## methods and returns
+##
 #foreach( $m in $methods )
 #if($m.Params.size() > 0)
     public $m.ReturnType ${m.MethodName}(#params($m.Params)) {
-        var params = new ${m.MethodName}Params(#names($m.Params));
+        var params = new #capitalize(${m.MethodName})Params(#names($m.Params));
         logger.info("Calling method `$m.MethodName` with parameters: " + params);
-    #if($m.ReturnType != "void")
-        return whenThenMap_${m.MethodName}.getOrDefault(params, ${m.MethodName}_default.apply(params));
-    #end
+
+        #if($hasData)
+            if(${m.MethodName}_function != null) {
+            #if($m.ReturnType != "void")
+                return ${m.MethodName}_function.apply(params, allData);
+            #else
+                ${m.MethodName}_function.apply(params, allData);
+            #end
+            } else {
+            #if($m.ReturnType != "void")
+                return data_${m.MethodName}.getOrDefault(params, ${m.MethodName}_default.apply(params));
+            #end
+            }
+        #end
     }
 #else
     public $m.ReturnType ${m.MethodName}() {
@@ -52,17 +111,28 @@ public class $className implements $interfaceName {
     #end
     }
 #end
-#if($m.Params.size() > 0 && $m.ReturnType != "void")
+
+##
+## when_* methods
+##
+#if($m.Params.size() > 0 && $m.ReturnType != "void" && $hasData)
     public void when_${m.MethodName}(#params($m.Params), ${m.ReturnType} thenReturn) {
-        var params = new ${m.MethodName}Params(#names($m.Params));
-        whenThenMap_${m.MethodName}.put(params, thenReturn);
+        var params = new #capitalize(${m.MethodName})Params(#names($m.Params));
+        data_${m.MethodName}.put(params, thenReturn);
     }
-    public void when_${m.MethodName}(Function<${m.MethodName}Params, ${m.ReturnType}> thenApply) {
+    public void when_${m.MethodName}(Function<#capitalize(${m.MethodName})Params, ${m.ReturnType}> thenApply) {
         this.${m.MethodName}_default = thenApply;
     }
-#elseif($m.ReturnType != "void")
+    public void when_${m.MethodName}(BiFunction<#capitalize(${m.MethodName})Params, AllData, #typeName(${m.ReturnType})> thenApply) {
+        this.${m.MethodName}_function = thenApply;
+    }
+#elseif($m.ReturnType != "void" && $hasData)
     public void when_${m.MethodName}(Supplier<$m.ReturnType> thenCall) {
         this.${m.MethodName}_default = thenCall;
+    }
+#elseif($m.Params.size() && $hasData)
+    public void when_${m.MethodName}(BiFunction<#capitalize(${m.MethodName})Params, AllData, #typeName(${m.ReturnType})> thenApply) {
+        this.${m.MethodName}_function = thenApply;
     }
 #end
 #end
