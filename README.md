@@ -5,6 +5,14 @@ Stubmaker can be useful in scenarios where there is a need to execute applicatio
 
 ## Usage
 
+```xml
+<dependency>
+  <groupId>io.github.markosski</groupId>
+  <artifactId>stubmaker-annotation</artifactId>
+  <version>...</version>
+</dependency>
+```
+
 ```java
 import stubmaker.annotation.ImplementStub;
 import java.util.Optional;
