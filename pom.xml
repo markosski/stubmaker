@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.markosski</groupId>
     <artifactId>stubmaker</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Stubmaker</name>
     <description>Stub generator for Java</description>
@@ -30,7 +30,7 @@
         <url>scm:git:git@github.com:markosski/stubmaker.git</url>
         <connection>scm:git:git@github.com:markosski/stubmaker.git</connection>
         <developerConnection>scm:git:git@github.com:markosski/stubmaker.git</developerConnection>
-      <tag>stubmaker-1.1.1</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <distributionManagement>
