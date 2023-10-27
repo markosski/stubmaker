@@ -5,6 +5,8 @@ Stubmaker can be useful in scenarios where there is a need to execute applicatio
 
 ## Usage
 
+Note: Stubmaker depends on JDK17.
+
 ```xml
 <dependency>
   <groupId>io.github.markosski</groupId>
