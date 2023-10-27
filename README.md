@@ -1,6 +1,6 @@
 # stubmaker
 
-Stubmaker is a small utility that generates a stub implementations of annotated interfaces. 
+Stubmaker is a simple library that generates (no runtime reflection) a stub implementations for annotated interfaces. 
 Stubmaker can be useful in scenarios where there is a need to execute application in lower environment or under test with some componnets stubbed to prevent from communicating with external services, e.g. component that sends confirmation email.
 
 ## Usage
@@ -28,16 +28,27 @@ public interface UserRepo {
 }
 ```
 
-Class of name `UserRepoStub` will be generated that implements `UserRepo` interface.
+Stub will be generated under the same package as your interface. 
+Depending on whether interface methods have parameters or not, `when_` methods will be generated on the stub to allow defining responses for given arguments.
 
-Following methods will be available on `UserRepoStub`:
+Set stub interactions
 
-`public Optional<UserRepo.User> get(String id)`
+```java
+var userRepo = new UserRepoStub();
+userRepo.when_get("100", Optional.of(new UserRepo.User("100", "Marcin K")));
+userRepo.when_get("101", Optional.of(new UserRepo.User("101", "John Wick")));
+userRepo.when_get((params) -> Optional.empty()); // for any other input
 
-`public void when_get(String id, Optional<UserRepo.User> thenReturn)`
+// somewhere else
 
-`public void when_get(Function<getParams, Optional<UserRepo.User>> thenApply)`
+doSomethingWithUser(String userId, UserRepo userRepo) {
+  //...
+  var user = userRepo.get(userId);
+  //...
+}
+```
 
-`public void create(UserRepo.NewUser newUser)`
+See more examples in `annotation-usage` module.
 
-`public void delete(String id)`
+
+
