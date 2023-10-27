@@ -30,6 +30,7 @@ public interface UserRepo {
 
 Stub will be generated under the same package as your interface. 
 Depending on whether interface methods have parameters or not, `when_` methods will be generated on the stub to allow defining responses for given arguments.
+In above example `when_` methods are only generated for `get(...)` because this is the only method that returns a value. Generated stub will also log with slf4j any method calls including arguments.
 
 Set stub interactions
 
