@@ -1,6 +1,6 @@
 package stubmaker.annotation;
 
-@ImplementStub
+@MakeStub
 public interface UserRepo {
     record User(String id, String fullName) {}
     record NewUser(String fullName) {}

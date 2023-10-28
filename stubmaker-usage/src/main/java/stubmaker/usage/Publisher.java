@@ -1,8 +1,8 @@
 package stubmaker.usage;
 
-import stubmaker.annotation.ImplementStub;
+import stubmaker.annotation.MakeStub;
 
-@ImplementStub
+@MakeStub
 public interface Publisher {
     record Event<T>(String id, T payload) {}
 
