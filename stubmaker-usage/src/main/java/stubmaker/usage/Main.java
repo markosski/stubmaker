@@ -8,32 +8,7 @@ import stubmaker.usage.UserRepoStub;
 public class Main {
     public static void main(String[] args) {
         var emailService = new EmailServiceStub();
-        var userRepo = new UserRepoStub();
-        userRepo.when_get("100", Optional.of(new UserRepo.User("100", "1", "Marcin K")));
-        userRepo.when_get("101", Optional.of(new UserRepo.User("101", "1", "John Wick")));
-        userRepo.when_get((params) -> Optional.empty());
-
-        userRepo.when_create((params, allData) -> {
-            var id = UUID.randomUUID().toString();
-            var param = new UserRepoStub.GetParams(id);
-            var user = new UserRepo.User(id, params.newUser().accountId(), params.newUser().fullName());
-            allData.data_get().put(param, Optional.of(user));
-            return id;
-        });
-
-        userRepo.when_delete((params, allData) -> {
-            var getParams = new UserRepoStub.GetParams(params.id());
-            allData.data_get().remove(getParams);
-            return null;
-        });
-
-        userRepo.when_getAll(((params, allData) ->
-            allData.data_get().entrySet().stream()
-                    .filter(entry -> entry.getValue().stream().allMatch(x -> x.accountId().equals(params.accountId())))
-                    .filter(entry -> entry.getValue().isPresent())
-                    .map(entry -> entry.getValue().get())
-                    .toList()
-        ));
+        var userRepo = UserRepoFactory.create();
 
         var component = new SendEmailComponent(userRepo, emailService);
 

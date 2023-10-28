@@ -14,10 +14,10 @@ Stubmaker can be useful in scenarios where there is a need to execute applicatio
 ```
 
 ```java
-import stubmaker.annotation.ImplementStub;
+import stubmaker.annotation.MakeStub;
 import java.util.Optional;
 
-@ImplementStub
+@MakeStub
 public interface UserRepo {
     record User(String id, String fullName) {}
     record NewUser(String fullName) {}
@@ -30,12 +30,13 @@ public interface UserRepo {
 
 * Stub will be generated under the same package as your interface. 
 * `when_` methods will be generated on the stub to allow defining responses for given arguments
-* Generated classes can also function as Fakes by modifying internal data based on inputs
+* Generated classes can also function as Fakes by providing functions to modify internal data
 
 Defining stub interactions
 
 ```java
-UserRepoStub userRepo = new UserRepoStub();
+var userRepo = new UserRepoStub();
+        
 userRepo.when_get("100", Optional.of(new UserRepo.User("100", "Marcin K")));
 userRepo.when_get("101", Optional.of(new UserRepo.User("101", "John Wick")));
 userRepo.when_get((params) -> Optional.empty()); // for any other input
@@ -47,6 +48,18 @@ doSomethingWithUser(String userId, UserRepo userRepo) {
   var user = userRepo.get(userId);
   //...
 }
+```
+
+```java
+var userRepo = new UserRepoStub();
+        
+userRepo.when_create((params, allData) -> {
+    var id = UUID.randomUUID().toString(); // generate unique ID for user
+    var param = new UserRepoStub.GetParams(id); // create param object, a key in data_get map
+    var user = new UserRepo.User(id, params.newUser().accountId(), params.newUser().fullName()); // create user record
+    allData.data_get().put(param, Optional.of(user)); // add user record
+    return id;
+});
 ```
 
 See more usage examples in `annotation-usage` module.

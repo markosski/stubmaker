@@ -1,11 +1,11 @@
 package stubmaker.usage;
 
-import stubmaker.annotation.ImplementStub;
+import stubmaker.annotation.MakeStub;
 
 import java.util.List;
 import java.util.Optional;
 
-@ImplementStub
+@MakeStub
 public interface UserRepo {
     record User(String id, String accountId, String fullName) {}
     record NewUser(String accountId, String fullName) {}

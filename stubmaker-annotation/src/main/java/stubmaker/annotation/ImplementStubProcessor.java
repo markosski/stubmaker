@@ -17,7 +17,7 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.util.*;
 
-@SupportedAnnotationTypes("stubmaker.annotation.ImplementStub")
+@SupportedAnnotationTypes("stubmaker.annotation.MakeStub")
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 @AutoService(Processor.class)
 public class ImplementStubProcessor extends AbstractProcessor {
@@ -121,7 +121,6 @@ public class ImplementStubProcessor extends AbstractProcessor {
                             } else {
                                 metaData.put(methodName, new MetaData(methodName, methodName, method.getReturnType().toString(), params));
                             }
-                            System.out.println(params);
                 });
                 try {
                     var data = metaData.entrySet().stream().map(x -> x.getValue()).toList();
@@ -137,7 +136,6 @@ public class ImplementStubProcessor extends AbstractProcessor {
     }
 
     private void writeBuilderFile(String className, String interfaceName, List<MetaData> data) throws IOException, URISyntaxException {
-        System.out.println("foo " + data);
         logger.info("Stubmaker start for class " + className);
         String packageName = null;
         int lastDot = className.lastIndexOf('.');
