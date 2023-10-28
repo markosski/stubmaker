@@ -28,14 +28,14 @@ public interface UserRepo {
 }
 ```
 
-Stub will be generated under the same package as your interface. 
-Depending on whether interface methods have parameters or not, `when_` methods will be generated on the stub to allow defining responses for given arguments.
-In above example `when_` methods are only generated for `get(...)` because this is the only method that returns a value. Generated stub will also log with slf4j any method calls including arguments.
+* Stub will be generated under the same package as your interface. 
+* `when_` methods will be generated on the stub to allow defining responses for given arguments
+* Generated classes can also function as Fakes by modifying internal data based on inputs
 
-Set stub interactions
+Defining stub interactions
 
 ```java
-var userRepo = new UserRepoStub();
+UserRepoStub userRepo = new UserRepoStub();
 userRepo.when_get("100", Optional.of(new UserRepo.User("100", "Marcin K")));
 userRepo.when_get("101", Optional.of(new UserRepo.User("101", "John Wick")));
 userRepo.when_get((params) -> Optional.empty()); // for any other input
@@ -49,7 +49,7 @@ doSomethingWithUser(String userId, UserRepo userRepo) {
 }
 ```
 
-See more examples in `annotation-usage` module.
+See more usage examples in `annotation-usage` module.
 
 
 

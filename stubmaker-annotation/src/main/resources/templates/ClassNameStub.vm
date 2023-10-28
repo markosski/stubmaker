@@ -85,7 +85,7 @@ public class $className implements $interfaceName {
 ##
 #foreach( $m in $methods )
 #if($m.Params.size() > 0)
-    public $m.ReturnType ${m.MethodName}(#params($m.Params)) {
+    public $m.ReturnType ${m.ActualMethodName}(#params($m.Params)) {
         var params = new #capitalize(${m.MethodName})Params(#names($m.Params));
         logger.info("Calling method `$m.MethodName` with parameters: " + params);
 
@@ -104,7 +104,7 @@ public class $className implements $interfaceName {
         #end
     }
 #else
-    public $m.ReturnType ${m.MethodName}() {
+    public $m.ReturnType ${m.ActualMethodName}() {
         logger.info("Calling method `$m.MethodName`");
     #if($m.ReturnType != "void")
         return ${m.MethodName}_default.get();

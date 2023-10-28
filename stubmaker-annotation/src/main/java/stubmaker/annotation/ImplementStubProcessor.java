@@ -44,15 +44,20 @@ public class ImplementStubProcessor extends AbstractProcessor {
     }
 
     static public class MetaData {
+        private final String uniqueMethodName;
         private final String methodName;
         private final String returnType;
         private final List<MethodParam> params;
-        public MetaData(String methodName, String returnType, List<MethodParam> params) {
+        public MetaData(String uniqueMethodName, String methodName, String returnType, List<MethodParam> params) {
+            this.uniqueMethodName = uniqueMethodName;
             this.methodName = methodName;
             this.returnType = returnType;
             this.params = params;
         }
         public String getMethodName() {
+            return uniqueMethodName;
+        }
+        public String getActualMethodName() {
             return methodName;
         }
         public String getReturnType() {
@@ -63,7 +68,7 @@ public class ImplementStubProcessor extends AbstractProcessor {
         }
         @Override
         public String toString() {
-            return methodName + "; " + returnType + "; " + params;
+            return uniqueMethodName + ";" + methodName + "; " + returnType + "; " + params;
         }
     }
 
@@ -75,7 +80,8 @@ public class ImplementStubProcessor extends AbstractProcessor {
             Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(annotation);
 
             for (Element element : annotatedElements) {
-                var metaData = new ArrayList<MetaData>();
+                var nameCount = new HashMap<String, Integer>();
+                var metaData = new HashMap<String, MetaData>();
                 logger.info("elements: " + annotatedElements);
                 TypeElement clazz = (TypeElement) element;
                 var elements = clazz.getEnclosedElements();
@@ -83,6 +89,7 @@ public class ImplementStubProcessor extends AbstractProcessor {
                 elements.stream()
                         .filter(x -> x.getKind() == ElementKind.METHOD)
                         .forEach(m -> {
+                            var methodName = m.getSimpleName().toString();
                             var method = (ExecutableType) m.asType();
                             var methodExec = (ExecutableElement) m;
 
@@ -104,11 +111,21 @@ public class ImplementStubProcessor extends AbstractProcessor {
                                     i++;
                                 }
                             }
-                            metaData.add(new MetaData(m.getSimpleName().toString(), method.getReturnType().toString(), params));
+
+                            nameCount.computeIfPresent(methodName, (name, counter) -> counter + 1);
+                            nameCount.computeIfAbsent(methodName, (name) -> 1);
+                            if (metaData.containsKey(methodName)) {
+                                var counter = nameCount.get(methodName);
+                                var newMethodName = methodName + counter;
+                                metaData.put(newMethodName, new MetaData(newMethodName, methodName, method.getReturnType().toString(), params));
+                            } else {
+                                metaData.put(methodName, new MetaData(methodName, methodName, method.getReturnType().toString(), params));
+                            }
                             System.out.println(params);
                 });
                 try {
-                    writeBuilderFile(clazz.toString(), clazz.toString(), metaData);
+                    var data = metaData.entrySet().stream().map(x -> x.getValue()).toList();
+                    writeBuilderFile(clazz.toString(), clazz.toString(), data);
                 } catch (IOException | URISyntaxException e) {
                     e.printStackTrace();
                     return false;
@@ -119,7 +136,8 @@ public class ImplementStubProcessor extends AbstractProcessor {
         return true;
     }
 
-    private void writeBuilderFile(String className, String interfaceName, ArrayList<MetaData> data) throws IOException, URISyntaxException {
+    private void writeBuilderFile(String className, String interfaceName, List<MetaData> data) throws IOException, URISyntaxException {
+        System.out.println("foo " + data);
         logger.info("Stubmaker start for class " + className);
         String packageName = null;
         int lastDot = className.lastIndexOf('.');

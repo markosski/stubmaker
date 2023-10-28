@@ -11,6 +11,7 @@ public interface UserRepo {
     record NewUser(String accountId, String fullName) {}
 
     Optional<User> get(String id);
+    Optional<User> get(String id, String accountId);
     List<User> getAll(String accountId);
     String create(NewUser newUser);
     void delete(String id);
