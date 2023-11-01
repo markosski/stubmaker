@@ -5,7 +5,7 @@ Stubmaker can be useful in scenarios where there is a need to execute applicatio
 
 ## Usage
 
-Note: Stubmaker depends on JDK17.
+Note: Stubmaker requires JDK 17.
 
 ```xml
 <dependency>
@@ -14,6 +14,23 @@ Note: Stubmaker depends on JDK17.
   <version>...</version>
 </dependency>
 ```
+
+Add following to `maven-compiler-plugin` plugin configuration
+
+```xml
+<configuration>
+  <annotationProcessorPaths>
+    <path>
+      <groupId>io.github.markosski</groupId>
+      <artifactId>stubmaker-annotation</artifactId>
+      <version>1.2.1</version>
+    </path>
+   </annotationProcessorPaths>
+</configuration>
+
+```
+
+Annotate your interface with `@MakeStub`
 
 ```java
 import stubmaker.annotation.MakeStub;
@@ -30,7 +47,7 @@ public interface UserRepo {
 }
 ```
 
-* Stub will be generated under the same package as your interface. 
+* Stub class will be generated under the same package as your interface. 
 * `when_` methods will be generated on the stub to allow defining responses for given arguments
 * Generated classes can also function as Fakes by providing functions to modify internal data
 
