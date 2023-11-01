@@ -1,4 +1,4 @@
-package stubmaker.usage;
+package stubmaker.domain;
 
 import stubmaker.annotation.MakeStub;
 

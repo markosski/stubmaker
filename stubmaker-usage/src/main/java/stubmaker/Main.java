@@ -1,9 +1,8 @@
-package stubmaker.usage;
+package stubmaker;
 
-import java.util.Optional;
-import java.util.UUID;
-import stubmaker.usage.EmailServiceStub;
-import stubmaker.usage.UserRepoStub;
+import stubmaker.domain.EmailService;
+import stubmaker.domain.EmailServiceStub;
+import stubmaker.domain.UserRepo;
 
 public class Main {
     public static void main(String[] args) {

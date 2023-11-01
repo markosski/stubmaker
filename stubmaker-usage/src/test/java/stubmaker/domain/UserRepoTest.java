@@ -1,6 +1,7 @@
-package stubmaker.usage;
+package stubmaker.domain;
 
 import org.junit.jupiter.api.Test;
+import stubmaker.UserRepoFactory;
 
 import java.util.Optional;
 

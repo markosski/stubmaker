@@ -53,11 +53,11 @@ public class $className implements $interfaceName {
 ##
 #foreach( $m in $methods )
 #if($m.Params.size() > 0)
-    record #capitalize(${m.MethodName})Params(#params($m.Params)) {}
+    public record #capitalize(${m.MethodName})Params(#params($m.Params)) {}
 #end
 #end
 #if($hasData)
-    record AllData($whenThenFunctionParams) {}
+    public record AllData($whenThenFunctionParams) {}
 #end
 
 ##

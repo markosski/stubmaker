@@ -1,11 +1,13 @@
-package stubmaker.usage;
+package stubmaker;
+
+import stubmaker.domain.UserRepo;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public class UserRepoFactory {
     public static UserRepo create() {
-        var userRepo = new stubmaker.usage.UserRepoStub();
+        var userRepo = new stubmaker.domain.UserRepoStub();
         // Defining initial data
         userRepo.when_get("100", Optional.of(new UserRepo.User("100", "1", "Marcin K")));
         userRepo.when_get("101", Optional.of(new UserRepo.User("101", "1", "John Wick")));
@@ -26,7 +28,7 @@ public class UserRepoFactory {
         // Define interaction for create method
         userRepo.when_create((params, allData) -> {
             var id = UUID.randomUUID().toString();
-            var param = new stubmaker.usage.UserRepoStub.GetParams(id);
+            var param = new stubmaker.domain.UserRepoStub.GetParams(id);
             var user = new UserRepo.User(id, params.newUser().accountId(), params.newUser().fullName());
             allData.data_get().put(param, Optional.of(user));
             return id;
@@ -34,7 +36,7 @@ public class UserRepoFactory {
 
         // Define interaction for delete method
         userRepo.when_delete((params, allData) -> {
-            var getParams = new stubmaker.usage.UserRepoStub.GetParams(params.id());
+            var getParams = new stubmaker.domain.UserRepoStub.GetParams(params.id());
             allData.data_get().remove(getParams);
             return null;
         });

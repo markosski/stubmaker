@@ -8,6 +8,10 @@
     <description>Stub generator for Java</description>
     <url>https://github.com/markosski/stubmaker</url>
 
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
     <developers>
         <developer>
             <name>Marcin Kossakowski</name>
