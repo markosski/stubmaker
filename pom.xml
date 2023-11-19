@@ -9,7 +9,7 @@
     <url>https://github.com/markosski/stubmaker</url>
 
     <properties>
-        <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.deploy.skip>false</maven.deploy.skip>
     </properties>
 
     <developers>
