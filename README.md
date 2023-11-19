@@ -23,7 +23,7 @@ Add following to `maven-compiler-plugin` plugin configuration
     <path>
       <groupId>io.github.markosski</groupId>
       <artifactId>stubmaker-annotation</artifactId>
-      <version>1.2.1</version>
+      <version>...</version>
     </path>
    </annotationProcessorPaths>
 </configuration>
